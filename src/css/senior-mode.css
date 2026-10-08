@@ -1,0 +1,158 @@
+/* ==========================================================================
+   SAARTHI - Senior-Friendly "Saral Mode" (High Visibility & Accessibility)
+   Specially tuned for elderly users: large typography, high contrast,
+   uncluttered touch targets, and warm calming accents.
+   ========================================================================== */
+
+body.mode-senior {
+  font-size: 19px;
+  background-color: #0b1322;
+}
+
+body.mode-senior .brand-title {
+  font-size: 1.85rem;
+}
+
+body.mode-senior .dash-title {
+  font-size: 1.5rem;
+}
+
+body.mode-senior .med-card {
+  padding: 1.6rem;
+  border-width: 2px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.mode-senior .med-name {
+  font-size: 1.4rem;
+}
+
+body.mode-senior .med-dose {
+  font-size: 1rem;
+  padding: 0.3rem 0.8rem;
+}
+
+body.mode-senior .med-purpose {
+  font-size: 1.05rem;
+  color: #e2e8f0;
+}
+
+body.mode-senior .meta-tag {
+  font-size: 0.95rem;
+  padding: 0.35rem 0.75rem;
+}
+
+body.mode-senior .med-instructions {
+  font-size: 0.95rem;
+  color: #f1f5f9;
+}
+
+body.mode-senior .med-toggle-btn {
+  padding: 0.9rem 1.8rem;
+  font-size: 1.15rem;
+  border-radius: var(--radius-full);
+}
+
+body.mode-senior .voice-listen-btn {
+  width: 52px;
+  height: 52px;
+  font-size: 1.5rem;
+}
+
+body.mode-senior .slot-tab {
+  padding: 0.65rem 1.4rem;
+  font-size: 1rem;
+}
+
+body.mode-senior .hyd-title {
+  font-size: 1.35rem;
+}
+
+body.mode-senior .hyd-sub {
+  font-size: 1rem;
+}
+
+body.mode-senior .glass-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 1.6rem;
+}
+
+body.mode-senior .hyd-add-btn {
+  padding: 1rem 1.6rem;
+  font-size: 1.15rem;
+}
+
+body.mode-senior .summary-content-box {
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+
+body.mode-senior .pattern-title {
+  font-size: 1.3rem;
+}
+
+body.mode-senior .pattern-observation {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+body.mode-senior .action-text {
+  font-size: 1.05rem;
+}
+
+body.mode-senior .voice-hero-card {
+  padding: 2rem 2.5rem;
+}
+
+body.mode-senior .voice-hero-text h2 {
+  font-size: 1.8rem;
+}
+
+body.mode-senior .voice-hero-text p {
+  font-size: 1.1rem;
+}
+
+body.mode-senior .voice-mic-main-btn {
+  padding: 1.1rem 2.2rem;
+  font-size: 1.25rem;
+}
+
+body.mode-senior .sos-trigger-btn {
+  padding: 1.1rem 2rem;
+  font-size: 1.25rem;
+}
+
+body.mode-senior .mood-emoji {
+  font-size: 2.2rem;
+}
+
+body.mode-senior .mood-label {
+  font-size: 0.95rem;
+}
+
+body.mode-senior .activity-item {
+  padding: 1.1rem 1.4rem;
+}
+
+body.mode-senior .act-title {
+  font-size: 1.15rem;
+}
+
+body.mode-senior .act-time {
+  font-size: 0.95rem;
+}
+
+body.mode-senior .act-check-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+}
+
+/* Caregiver mode specific styling */
+body.mode-caregiver .clinical-only {
+  display: block;
+}
+
+body.mode-senior .clinical-only {
+  display: none;
+}

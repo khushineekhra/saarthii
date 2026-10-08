@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAARTHI (सारथी) - Elderly Care & Daily Health Assistant AI</title>
+  <meta name="description" content="AI-powered daily health companion for elderly users and caregivers. Medication management, vitals anomaly detection, bilingual voice assistant, and health summaries.">
+  <meta name="theme-color" content="#0d9488">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%22><text y=%2226%22 font-size=%2228%22>🌿</text></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/src/css/main.css">
+  <link rel="stylesheet" href="/src/css/components.css">
+  <link rel="stylesheet" href="/src/css/senior-mode.css">
+</head>
+<body class="mode-senior">
+
+  <!-- ========================================================================
+       TOP NAVIGATION BAR
+       ======================================================================== -->
+  <header class="top-navbar" role="banner">
+    <div class="brand-wrapper">
+      <div class="brand-logo-icon" aria-hidden="true">🌿</div>
+      <div class="brand-names">
+        <h1 class="brand-title">
+          SAARTHI <span class="brand-devanagari">सारथी</span>
+        </h1>
+        <span class="brand-tagline">Elderly Care & Daily Health Assistant AI</span>
+      </div>
+    </div>
+
+    <nav class="nav-actions" aria-label="Main Navigation">
+      <!-- Mode Switcher -->
+      <div class="mode-toggle-group" role="group" aria-label="UI Mode Switcher">
+        <button class="mode-btn active" id="btnModeSenior" title="Senior Easy Mode with big text">
+          👵 Saral Mode (सरल)
+        </button>
+        <button class="mode-btn" id="btnModeCaregiver" title="Detailed Caregiver & Doctor Analytics">
+          👩‍⚕️ Caregiver View
+        </button>
+      </div>
+
+      <!-- Separate Languages: English and Hindi -->
+      <div class="lang-switch-group" role="group" aria-label="Language Selector">
+        <button class="lang-btn" id="btnLangEn" title="English language">🇬🇧 English</button>
+        <button class="lang-btn active" id="btnLangHi" title="हिन्दी भाषा">🇮🇳 हिन्दी</button>
+      </div>
+
+      <!-- Two Themes: Dark & Light -->
+      <div class="theme-switch-group" role="group" aria-label="Theme Selector">
+        <button class="theme-btn active" id="btnThemeDark" title="Dark Theme">🌙</button>
+        <button class="theme-btn" id="btnThemeLight" title="Light Theme">☀️</button>
+      </div>
+
+      <!-- AI Pill Scanner Tool -->
+      <button class="nav-tool-btn" id="btnOpenScanner" title="Scan Medication Strip with AI Vision">
+        📸 AI Pill Scan
+      </button>
+
+      <!-- Health Passport Export -->
+      <button class="nav-tool-btn" id="btnOpenPassport" title="View & Print Clinical Health Passport">
+        📋 Health Passport
+      </button>
+
+      <!-- Google Profile & Sign-in Trigger -->
+      <button class="user-profile-nav" id="userProfileBtn" title="Switch User or Sign in with Google">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" alt="User Profile" class="nav-avatar" id="headerProfileAvatar" />
+        <div class="nav-user-info">
+          <span class="nav-user-name" id="headerProfileName">Dadaji</span>
+          <span class="nav-user-role" id="headerProfileRole">Senior User</span>
+        </div>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APPLICATION CONTAINER
+       ======================================================================== -->
+  <main class="app-container" role="main">
+
+    <!-- ======================================================================
+         VOICE ASSISTANT HERO BANNER ("Suno Saarthi")
+         ====================================================================== -->
+    <section class="voice-hero-card" aria-label="Voice Assistant">
+      <div class="voice-hero-left">
+        <div class="voice-orb-wrapper">
+          <div class="voice-orb" id="voiceOrb" title="Tap to activate voice assistant" role="button" tabindex="0">
+            🎙️
+          </div>
+        </div>
+        <div class="voice-hero-text">
+          <h2>Suno Saarthi (सुनो सारथी)</h2>
+          <p id="voiceStatusText">Speak naturally: <em>"Maine BP ki goli le li"</em> or <em>"Mera BP 130 85 hai"</em></p>
+        </div>
+      </div>
+
+      <div class="voice-hero-actions">
+        <button class="voice-mic-main-btn" id="btnVoiceAssistant" aria-label="Tap to talk with Saarthi AI">
+          <span class="mic-icon">🎤</span>
+          <span>Tap to Talk</span>
+        </button>
+
+        <button class="sos-trigger-btn" id="btnTriggerSOS" aria-label="Trigger Emergency SOS">
+          <span>🚨 SOS HELP</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         DAILY HEALTH SUMMARY HIGHLIGHT BANNER
+         ====================================================================== -->
+    <section class="summary-highlight-banner" aria-label="Daily Health Summary">
+      <div class="summary-top-row">
+        <div class="summary-heading">
+          <span>📊</span>
+          <span id="summaryBannerHeading">Daily Health Summary & AI Caregiver Digest</span>
+        </div>
+        <div class="summary-actions">
+          <button class="summary-btn" id="btnSpeakSummary" title="Read summary aloud">
+            🔊 Listen Summary
+          </button>
+          <button class="summary-btn summary-btn-whatsapp" id="btnSendWhatsAppDigest" title="Send WhatsApp update to caregiver">
+            💬 WhatsApp Caregiver
+          </button>
+        </div>
+      </div>
+
+      <div class="summary-content-box" id="dailySummaryContent">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Quick Metrics Row -->
+      <div class="metrics-row">
+        <div class="metric-card">
+          <span class="metric-label" id="metricAdherenceLabel">Medicine Adherence</span>
+          <span class="metric-val" id="adherenceRingValue">80%</span>
+          <span class="metric-status" id="metricAdherenceSub">4 of 5 doses taken</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label" id="metricBPLabel">Latest Blood Pressure</span>
+          <span class="metric-val">158 / 96</span>
+          <span class="metric-status" style="color: #f43f5e" id="metricBPSub">⚠️ Elevated Systolic</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label" id="metricSugarLabel">Fasting Blood Glucose</span>
+          <span class="metric-val">130 mg/dL</span>
+          <span class="metric-status" style="color: #10b981" id="metricSugarSub">✓ Healthy Baseline</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label" id="metricIndexLabel">AI Health Index</span>
+          <span class="metric-val" id="healthIndexScore">88/100</span>
+          <span class="metric-status" id="healthIndexStatus">Optimal Care</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TWO-COLUMN DASHBOARD GRID
+         ====================================================================== -->
+    <div class="dashboard-grid">
+
+      <!-- LEFT COLUMN: MEDICATIONS, HYDRATION & DAILY ROUTINE -->
+      <div class="dash-column">
+
+        <!-- MEDICATIONS CARD -->
+        <section class="dash-card" aria-label="Medication Reminders">
+          <div class="dash-card-header">
+            <div class="dash-title-group">
+              <span class="dash-icon">💊</span>
+              <div>
+                <h3 class="dash-title" id="medsCardTitle">Today's Medicines & Schedule</h3>
+                <p class="dash-subtitle" id="medsCardSubtitle">Tap once when you take your medicine</p>
+              </div>
+            </div>
+            <button class="summary-btn" id="btnOpenAddMed" style="background: rgba(13, 148, 136, 0.2); color: #5eead4; border-color: rgba(20, 184, 166, 0.4)">
+              ➕ Add Medicine
+            </button>
+          </div>
+
+          <!-- Time Slot Filter Tabs -->
+          <div class="slot-tabs-row" role="tablist">
+            <button class="slot-tab active" data-slot="all">All Day (पूरा दिन)</button>
+            <button class="slot-tab" data-slot="Morning">Morning (सुबह)</button>
+            <button class="slot-tab" data-slot="Afternoon">Afternoon (दोपहर)</button>
+            <button class="slot-tab" data-slot="Night">Night (रात)</button>
+          </div>
+
+          <!-- Medication List -->
+          <div class="meds-list" id="medsListContainer">
+            <!-- Dynamically populated via reminders.js -->
+          </div>
+        </section>
+
+        <!-- HYDRATION TRACKER WIDGET -->
+        <section class="dash-card" aria-label="Water Tracker">
+          <div id="hydrationWidgetContainer">
+            <!-- Dynamically populated via reminders.js -->
+          </div>
+        </section>
+
+        <!-- DAILY WELLNESS & SMRITI (COGNITIVE / MOOD CHECK-IN) -->
+        <section class="dash-card" aria-label="Daily Wellness Check-in">
+          <div class="dash-card-header">
+            <div class="dash-title-group">
+              <span class="dash-icon">🧘</span>
+              <div>
+                <h3 class="dash-title" id="wellnessCardTitle">Daily Wellness & Mood (आज कैसा महसूस कर रहे हैं?)</h3>
+                <p class="dash-subtitle" id="wellnessCardSubtitle">One-tap mood log & gentle cognitive check-in</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mood-picker-row">
+            <button class="mood-btn" data-mood="great">
+              <span class="mood-emoji">😄</span>
+              <span class="mood-label" id="moodLabelGreat">Great (उत्कृष्ट)</span>
+            </button>
+            <button class="mood-btn selected" data-mood="good">
+              <span class="mood-emoji">🙂</span>
+              <span class="mood-label" id="moodLabelGood">Good (अच्छा)</span>
+            </button>
+            <button class="mood-btn" data-mood="okay">
+              <span class="mood-emoji">😐</span>
+              <span class="mood-label" id="moodLabelOkay">Okay (सामान्य)</span>
+            </button>
+            <button class="mood-btn" data-mood="tired">
+              <span class="mood-emoji">🥱</span>
+              <span class="mood-label" id="moodLabelTired">Tired (थकावट)</span>
+            </button>
+            <button class="mood-btn" data-mood="unwell">
+              <span class="mood-emoji">🤕</span>
+              <span class="mood-label" id="moodLabelUnwell">Unwell (अस्वस्थ)</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ROUTINE ACTIVITIES -->
+        <section class="dash-card" aria-label="Daily Routine Activities">
+          <div class="dash-card-header">
+            <div class="dash-title-group">
+              <span class="dash-icon">🏃‍♂️</span>
+              <div>
+                <h3 class="dash-title" id="routineCardTitle">Daily Routine & Gentle Activities</h3>
+                <p class="dash-subtitle" id="routineCardSubtitle">Light walk, breathing, and doctor recommended exercises</p>
+              </div>
+            </div>
+            <button class="summary-btn" id="btnOpenAddAct" style="background: rgba(13, 148, 136, 0.2); color: #5eead4; border-color: rgba(20, 184, 166, 0.4)">
+              ➕ Add Activity
+            </button>
+          </div>
+          <div class="activities-list" id="activitiesContainer">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN: AI CLINICAL ENGINE, VITALS & APPOINTMENTS -->
+      <div class="dash-column">
+
+        <!-- AI HEALTH PATTERN ANOMALY DETECTOR CARD -->
+        <section class="dash-card" aria-label="AI Health Pattern Anomaly Detector">
+          <div class="dash-card-header">
+            <div class="dash-title-group">
+              <span class="dash-icon">🧠</span>
+              <div>
+                <h3 class="dash-title" id="aiPatternsCardTitle">AI Pattern Anomaly Detector</h3>
+                <p class="dash-subtitle" id="aiPatternsCardSubtitle">Surfaces clinical trends, drug risks & vitals correlations</p>
+              </div>
+            </div>
+            <span class="ai-engine-tag" id="aiBadgeText">Neural Health Engine</span>
+          </div>
+
+          <div class="pattern-alerts-list" id="aiPatternsContainer">
+            <!-- Dynamically populated via ai-patterns.js -->
+          </div>
+        </section>
+
+        <!-- VITALS LOG & INTERACTIVE SVG CHARTS -->
+        <section class="dash-card" aria-label="Vitals Trends">
+          <div class="dash-card-header">
+            <div class="dash-title-group">
+              <span class="dash-icon">📈</span>
+              <div>
+                <h3 class="dash-title" id="vitalsCardTitle">Vitals Longitudinal Trends</h3>
+                <p class="dash-subtitle" id="vitalsCardSubtitle">Interactive 7-day Blood Pressure & Glucose tracking</p>
+              </div>
+            </div>
+            <button class="summary-btn" id="btnOpenAddVitals" style="background: rgba(20, 184, 166, 0.2); color: #5eead4; border-color: rgba(20, 184, 166, 0.4)">
+              ➕ Log New Vitals
+            </button>
+          </div>
+
+          <div id="vitalsChartsContainer">
+            <!-- Populated via vitals.js -->
+          </div>
+        </section>
+
+        <!-- APPOINTMENTS CARD -->
+        <section class="dash-card" aria-label="Upcoming Appointments">
+          <div class="dash-card-header">
+            <div class="dash-title-group">
+              <span class="dash-icon">🏥</span>
+              <div>
+                <h3 class="dash-title" id="appointmentsCardTitle">Doctor Visits & Care Appointments</h3>
+                <p class="dash-subtitle" id="appointmentsCardSubtitle">Upcoming consultations, labs & home therapy</p>
+              </div>
+            </div>
+            <button class="summary-btn" id="btnOpenAddApt" style="background: rgba(13, 148, 136, 0.2); color: #5eead4; border-color: rgba(20, 184, 166, 0.4)">
+              ➕ Add Appointment
+            </button>
+          </div>
+
+          <div class="apts-list" id="appointmentsListContainer">
+            <!-- Populated via reminders.js -->
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- HACKATHON DEMO CONTROLS FOOTER -->
+    <footer style="margin-top: 3rem; text-align: center; color: var(--text-dim); font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+      <span id="footerText">SAARTHI AI v1.0 • Built for Elderly Care, Hackathons & Healthcare Accessibility</span>
+      <button id="btnResetDemoData" style="background: transparent; border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 0.25rem 0.6rem; border-radius: 6px; cursor: pointer;">
+        ↺ Reset Demo Data
+      </button>
+    </footer>
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL 1: GOOGLE AUTHENTICATION & PERSONA SWITCHER
+       ======================================================================== -->
+  <div class="modal-overlay" id="googleLoginModal" role="dialog" aria-modal="true" aria-labelledby="googleLoginTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">🔐</span>
+          <h3 class="modal-title" id="googleLoginTitle">Google Sign-In & Profile Switcher</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseLogin" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="google-brand-header">
+        <svg class="google-logo-svg" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        <h4 class="google-login-title">Choose an account</h4>
+        <p class="google-login-subtitle">to continue to <strong>SAARTHI Assistant</strong></p>
+      </div>
+
+      <!-- Demo Google Profiles for Judge Testing -->
+      <div class="google-accounts-list" id="googleAccountsList">
+        <!-- Rendered via auth.js -->
+      </div>
+
+      <!-- Custom Google Account Write-in -->
+      <div class="custom-login-box">
+        <span class="custom-login-title">Or sign in with custom details:</span>
+        <input type="text" class="form-input" id="customGoogleName" placeholder="Full Name (e.g., Harish Patel)" />
+        <input type="email" class="form-input" id="customGoogleEmail" placeholder="Google Email (e.g., harish.patel@gmail.com)" />
+        <select class="form-select" id="customGoogleRole">
+          <option value="senior">Role: Senior Patient (Easy Mode)</option>
+          <option value="caregiver">Role: Family Caregiver / Doctor View</option>
+        </select>
+        <button class="form-btn-submit" id="btnCustomGoogleLogin">
+          Continue with Google Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: AI PILL VISION SCANNER & DDI CHECKER
+       ======================================================================== -->
+  <div class="modal-overlay" id="pillScannerModal" role="dialog" aria-modal="true" aria-labelledby="scannerModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📸</span>
+          <div>
+            <h3 class="modal-title" id="scannerModalTitle">AI Vision Pill & Rx Scanner</h3>
+            <p style="font-size: 0.78rem; color: var(--text-muted)">Optical text extraction & Drug-Drug Interaction safety analysis</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseScanner" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="scanner-body">
+        <div class="scanner-preset-bar">
+          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Demo Presets:</label>
+          <select class="form-select" id="scanPresetSelect" style="flex: 1;">
+            <!-- Loaded via pill-scanner.js -->
+          </select>
+          <label class="nav-tool-btn" style="cursor: pointer;" title="Upload custom photo">
+            📁 Upload
+            <input type="file" id="pillUploadInput" accept="image/*" style="display: none;" />
+          </label>
+        </div>
+
+        <div class="scanner-viewport">
+          <img src="" id="scanPreviewImg" class="scanner-img" alt="Medication to Scan" />
+          <div class="scanner-radar-line" id="scanRadar"></div>
+        </div>
+
+        <div class="scanner-status-box" id="scanStatusText">
+          Select a sample strip or upload your photo, then tap "Start AI Scan".
+        </div>
+
+        <div style="display: flex; justify-content: center;">
+          <button class="btn-take-now" id="btnStartScan" style="padding: 0.75rem 2rem; font-size: 1rem;">
+            🔍 Start AI Scan
+          </button>
+        </div>
+
+        <div id="scanResultsArea">
+          <!-- Dynamically populated after scanning -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: VITALS QUICK ENTRY
+       ======================================================================== -->
+  <div class="modal-overlay" id="vitalsModal" role="dialog" aria-modal="true" aria-labelledby="vitalsModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">🩺</span>
+          <h3 class="modal-title" id="vitalsModalTitle">Log New Health Vitals</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseAddVitals" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <!-- Quick presets for judges -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1rem;">
+        <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem; font-weight: 600;">⚡ Quick Demo Presets for Hackathon Judges:</span>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="vital-preset-btn nav-tool-btn" data-sys="120" data-dia="80" data-pulse="72" data-sugar="105">
+            🟢 Normal (120/80)
+          </button>
+          <button type="button" class="vital-preset-btn nav-tool-btn" data-sys="162" data-dia="98" data-pulse="88" data-sugar="140">
+            🚨 High BP Spike (162/98)
+          </button>
+          <button type="button" class="vital-preset-btn nav-tool-btn" data-sys="138" data-dia="86" data-pulse="82" data-sugar="185">
+            ⚠️ Sugar Spike (185 mg/dL)
+          </button>
+        </div>
+      </div>
+
+      <form id="vitalsForm" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Systolic BP (mmHg)</label>
+            <input type="number" id="inputSystolic" class="form-input" style="width: 100%;" required value="130" min="60" max="240" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Diastolic BP (mmHg)</label>
+            <input type="number" id="inputDiastolic" class="form-input" style="width: 100%;" required value="85" min="40" max="150" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Pulse / Heart Rate (bpm)</label>
+            <input type="number" id="inputPulse" class="form-input" style="width: 100%;" value="76" min="40" max="180" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Blood Glucose (mg/dL)</label>
+            <input type="number" id="inputSugar" class="form-input" style="width: 100%;" value="115" min="40" max="400" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Sugar Reading Timing</label>
+            <select id="inputSugarType" class="form-select" style="width: 100%;">
+              <option value="Fasting">Fasting (खाली पेट)</option>
+              <option value="Post-Meal">Post-Meal (खाने के बाद)</option>
+              <option value="Random">Random</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Oxygen SpO2 (%)</label>
+            <input type="number" id="inputSpo2" class="form-input" style="width: 100%;" value="98" min="70" max="100" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-take-now" style="padding: 0.85rem; font-size: 1rem; justify-content: center; margin-top: 0.5rem;">
+          💾 Save Vitals & Run AI Pattern Analysis
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 4: CLINICAL HEALTH PASSPORT & PRINTABLE REPORT
+       ======================================================================== -->
+  <div class="modal-overlay" id="passportModal" role="dialog" aria-modal="true" aria-labelledby="passportModalTitle">
+    <div class="modal-dialog" style="max-width: 820px;">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📋</span>
+          <div>
+            <h3 class="modal-title" id="passportModalTitle">Doctor Visit Health Passport</h3>
+            <p style="font-size: 0.75rem; color: var(--text-muted)">Printable, comprehensive longitudinal medical brief</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="nav-tool-btn" id="btnPrintPassport" style="background: #0d9488; color: #fff;">
+            🖨️ Print / Save PDF
+          </button>
+          <button class="modal-close-btn" id="btnClosePassport" aria-label="Close dialog">&times;</button>
+        </div>
+      </div>
+
+      <div id="passportContent">
+        <!-- Rendered via summary.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 5: EMERGENCY SOS DISTRESS BEACON
+       ======================================================================== -->
+  <div class="modal-overlay" id="sosModal" role="dialog" aria-modal="true" aria-labelledby="sosModalTitle">
+    <div class="modal-dialog sos-modal-dialog">
+
+      <!-- PHASE 1: COUNTDOWN PHASE -->
+      <div id="sosCountdownPhase">
+        <h3 class="modal-title" id="sosModalTitle" style="color: #ef4444; font-size: 1.6rem;">
+          🚨 EMERGENCY BEACON
+        </h3>
+        <p style="color: #cbd5e1; font-size: 0.95rem; margin-top: 0.5rem;">
+          Alerting Daughter Ananya, Doctor Banerjee & Dispatching GPS coordinates in:
+        </p>
+
+        <div class="sos-countdown-circle" id="sosCountdownNum">5</div>
+
+        <button class="sos-cancel-giant-btn" id="btnCancelSOS">
+          🛑 CANCEL (FALSE ALARM)
+        </button>
+      </div>
+
+      <!-- PHASE 2: TRIGGERED ALARM PHASE -->
+      <div id="sosTriggeredPhase" style="display: none;">
+        <div class="sos-active-banner">
+          🚨 SOS DISTRESS ACTIVATED!
+        </div>
+        <p style="color: #f1f5f9; font-size: 1rem; margin-bottom: 1rem;">
+          Emergency siren sounding. Caregiver notified with live GPS pin (28.6139° N, 77.2090° E).
+        </p>
+
+        <div class="sos-quick-calls">
+          <a href="tel:112" class="sos-call-btn">
+            📞 Call 112 / 108
+          </a>
+          <a href="tel:+919876543210" class="sos-call-btn" style="background: #0d9488;">
+            📞 Call Ananya
+          </a>
+        </div>
+
+        <button class="sos-whatsapp-btn" id="btnSendSOSWhatsApp">
+          💬 Send SOS WhatsApp with Live GPS Pin
+        </button>
+
+        <button class="nav-tool-btn" id="btnStopSiren" style="margin-top: 1rem; width: 100%; justify-content: center;">
+          Silence Siren & Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 6: EDIT / ADD MEDICATION
+       ======================================================================== -->
+  <div class="modal-overlay" id="editMedModal" role="dialog" aria-modal="true" aria-labelledby="editMedModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">💊</span>
+          <h3 class="modal-title" id="editMedModalTitle">Edit Medication Details</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseEditMed" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="editMedForm" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <input type="hidden" id="editMedId" value="" />
+
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Medicine Name (दवा का नाम)</label>
+            <input type="text" id="inputMedName" class="form-input" style="width: 100%;" required placeholder="e.g. Amlodipine" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Dosage (खुराक)</label>
+            <input type="text" id="inputMedDose" class="form-input" style="width: 100%;" required placeholder="e.g. 5 mg" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Time Slot (समय का पहर)</label>
+            <select id="inputMedSlot" class="form-select" style="width: 100%;">
+              <option value="Morning">Morning (सुबह)</option>
+              <option value="Afternoon">Afternoon (दोपहर)</option>
+              <option value="Night">Night (रात)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Schedule Time (निश्चित समय)</label>
+            <input type="text" id="inputMedTime" class="form-input" style="width: 100%;" value="08:30 AM" placeholder="08:30 AM" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Relation to Food (भोजन का संबंध)</label>
+            <select id="inputMedFood" class="form-select" style="width: 100%;">
+              <option value="After Breakfast">After Breakfast (नाश्ते के बाद)</option>
+              <option value="With Breakfast">With Breakfast (नाश्ते के साथ)</option>
+              <option value="Before Breakfast">Before Breakfast (नाश्ते से पहले)</option>
+              <option value="After Lunch">After Lunch (दोपहर भोजन के बाद)</option>
+              <option value="After Dinner">After Dinner (रात खाने के बाद)</option>
+              <option value="Bedtime">Bedtime (सोते समय)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Health Indication / Purpose (बीमारी / उद्देश्य)</label>
+            <input type="text" id="inputMedPurpose" class="form-input" style="width: 100%;" placeholder="e.g. Blood Pressure control" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Stock Remaining (बची हुई गोलियां)</label>
+            <input type="number" id="inputMedStock" class="form-input" style="width: 100%;" value="20" min="0" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Low Stock Alert Limit (कम स्टॉक चेतावनी सीमा)</label>
+            <input type="number" id="inputMedThreshold" class="form-input" style="width: 100%;" value="5" min="1" />
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Doctor's Special Instructions (निर्देश)</label>
+          <input type="text" id="inputMedInstructions" class="form-input" style="width: 100%;" placeholder="e.g. Swallow whole with water, do not crush" />
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem;">
+          <button type="button" class="nav-tool-btn" id="btnDeleteMed" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+            🗑️ Delete
+          </button>
+          <button type="submit" class="btn-take-now" style="flex: 1; justify-content: center; font-size: 0.95rem;">
+            💾 Save Medication
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 7: EDIT / ADD APPOINTMENT
+       ======================================================================== -->
+  <div class="modal-overlay" id="editAptModal" role="dialog" aria-modal="true" aria-labelledby="editAptModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">🏥</span>
+          <h3 class="modal-title" id="editAptModalTitle">Edit Doctor Appointment</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseEditApt" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="editAptForm" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <input type="hidden" id="editAptId" value="" />
+
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Appointment Title / Reason (कारण / शीर्षक)</label>
+          <input type="text" id="inputAptTitle" class="form-input" style="width: 100%;" required placeholder="e.g. Cardiology Review & Echo Test" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Doctor Name (डॉक्टर का नाम)</label>
+            <input type="text" id="inputAptDoctor" class="form-input" style="width: 100%;" required placeholder="e.g. Dr. A. K. Banerjee" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Type (प्रकार)</label>
+            <select id="inputAptType" class="form-select" style="width: 100%;">
+              <option value="Doctor">Doctor Visit (डॉक्टर परामर्श)</option>
+              <option value="Therapy">Physiotherapy (फिजियोथेरेपी)</option>
+              <option value="Lab">Lab / Blood Test (जांच / टेस्ट)</option>
+              <option value="Checkup">General Checkup (सामान्य जांच)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Hospital / Clinic / Address (स्थान / अस्पताल)</label>
+          <input type="text" id="inputAptHospital" class="form-input" style="width: 100%;" placeholder="e.g. Apollo Heart Centre, New Delhi" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Date (तारीख)</label>
+            <input type="date" id="inputAptDate" class="form-input" style="width: 100%;" required />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Time (समय)</label>
+            <input type="text" id="inputAptTime" class="form-input" style="width: 100%;" placeholder="10:30 AM" />
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Preparation Notes (विशेष टिप्पणी / तैयारी)</label>
+          <input type="text" id="inputAptNotes" class="form-input" style="width: 100%;" placeholder="e.g. Carry recent BP log and eco-aspirin prescription" />
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem;">
+          <button type="button" class="nav-tool-btn" id="btnDeleteApt" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+            🗑️ Delete
+          </button>
+          <button type="submit" class="btn-take-now" style="flex: 1; justify-content: center; font-size: 0.95rem;">
+            💾 Save Appointment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 8: EDIT / ADD ROUTINE ACTIVITY
+       ======================================================================== -->
+  <div class="modal-overlay" id="editActModal" role="dialog" aria-modal="true" aria-labelledby="editActModalTitle">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">🏃‍♂️</span>
+          <h3 class="modal-title" id="editActModalTitle">Edit Daily Activity</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseEditAct" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="editActForm" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <input type="hidden" id="editActId" value="" />
+
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Activity Title (गतिविधि का नाम)</label>
+          <input type="text" id="inputActTitle" class="form-input" style="width: 100%;" required placeholder="e.g. Morning Walk in Garden" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Scheduled Time (समय)</label>
+            <input type="text" id="inputActTime" class="form-input" style="width: 100%;" placeholder="06:45 AM" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Icon Emoji (चिह्न)</label>
+            <select id="inputActIcon" class="form-select" style="width: 100%;">
+              <option value="🚶">🚶 Morning Walk</option>
+              <option value="🧘">🧘 Pranayama / Yoga</option>
+              <option value="☀️">☀️ Sunlight</option>
+              <option value="🌳">🌳 Nature Walk</option>
+              <option value="📱">📱 Family Call</option>
+              <option value="🍵">🍵 Herbal Tea</option>
+              <option value="📖">📖 Reading</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem;">
+          <button type="button" class="nav-tool-btn" id="btnDeleteAct" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+            🗑️ Delete
+          </button>
+          <button type="submit" class="btn-take-now" style="flex: 1; justify-content: center; font-size: 0.95rem;">
+            💾 Save Activity
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main JavaScript App Bundle -->
+  <script type="module" src="/src/js/app.js"></script>
+</body>
+</html>
